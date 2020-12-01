@@ -1,0 +1,12 @@
+[package]
+name = "advent_of_code2020"
+version = "0.1.0"
+authors = ["jlmcmchl <jlmcmchl@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+aoc-runner = "0.3"
+aoc-runner-derive = "0.3"
+itertools = "0.9"
