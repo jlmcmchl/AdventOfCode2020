@@ -8,12 +8,22 @@ pub fn input_generator(input: &str) -> Vec<u32> {
 
 #[aoc(day1, part1)]
 pub fn solve_p1(input: &[u32]) -> u32 {
-    let opts: Vec<_> = input.iter().combinations(2).filter(|v| v.iter().map(|a| *a).sum::<u32>() == 2020).map(|v| v.iter().map(|a| *a).product()).collect();
+    let opts: Vec<_> = input
+        .iter()
+        .combinations(2)
+        .filter(|v| v.iter().map(|a| *a).sum::<u32>() == 2020)
+        .map(|v| v.iter().map(|a| *a).product())
+        .collect();
     opts[0]
 }
 
 #[aoc(day1, part2)]
 pub fn solve_p2(input: &[u32]) -> u32 {
-    let opts: Vec<_> = input.iter().combinations(3).filter(|v| v.iter().map(|a| *a).sum::<u32>() == 2020).map(|v| v.iter().map(|a| *a).product()).collect();
+    let opts: Vec<_> = input
+        .iter()
+        .combinations(3)
+        .filter(|v| v.iter().map(|a| *a).sum::<u32>() == 2020)
+        .map(|v| v.iter().map(|a| *a).product())
+        .collect();
     opts[0]
 }
