@@ -10,4 +10,4 @@ edition = "2018"
 aoc-runner = "0.3"
 aoc-runner-derive = "0.3"
 itertools = "0.9"
-nom = { version = "6.0", features = ["alloc"] }
+nom = { version = "6.0", features = ["alloc", "regexp"] }
