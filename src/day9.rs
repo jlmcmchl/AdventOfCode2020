@@ -48,7 +48,7 @@ pub fn solve_p2(input: &Vec<u64>) -> u64 {
             // do the thing
             let min = input.iter().skip(i).take(len).min().unwrap();
             let max = input.iter().skip(i).take(len).max().unwrap();
-            println!("{} {}", min, max);
+            // println!("{} {}", min, max);
             return min + max;
         }
 

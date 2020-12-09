@@ -1,8 +1,7 @@
-use std::{collections::HashSet, fmt::Debug, unimplemented};
+use std::{collections::HashSet, fmt::Debug};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 use nom::{
-    branch::alt,
     bytes::complete::tag,
     bytes::complete::{is_a, take},
     multi::separated_list0,
@@ -10,32 +9,41 @@ use nom::{
     IResult,
 };
 
+#[derive(Debug, Clone, Copy)]
+pub enum Op {
+    Nop(i16),
+    Jmp(i16),
+    Acc(i16),
+}
+
+impl From<(&str, i16)> for Op {
+    fn from((op, val): (&str, i16)) -> Self {
+        match op {
+            "acc" => Op::Acc(val),
+            "jmp" => Op::Jmp(val),
+            "nop" => Op::Nop(val),
+            _ => unreachable!(),
+        }
+    }
+}
+
 #[aoc_generator(day8)]
-pub fn input_generator(input: &str) -> Vec<(String, i16)> {
+pub fn input_generator(input: &str) -> Vec<Op> {
     //let input = "nop +0\nacc +1\njmp +4\nacc +3\njmp -3\nacc -99\nacc +1\njmp -4\nacc +6";
     let res: IResult<_, _> = separated_list0(
         tag("\n"),
-        tuple((
-            terminated(take(3usize), tag(" ")),
-            alt((tag("-"), tag("+"))),
-            is_a("1234567890"),
-        )),
+        tuple((terminated(take(3usize), tag(" ")), is_a("+-1234567890"))),
     )(input);
 
     let (_, txt) = res.unwrap();
 
     txt.iter()
-        .map(|(a, b, c)| {
-            (
-                (*a).into(),
-                c.parse::<i16>().unwrap() * if *b == "-" { -1 } else { 1 },
-            )
-        })
+        .map(|(a, b)| Op::from((*a, b.parse::<i16>().unwrap())))
         .collect()
 }
 
 #[aoc(day8, part1)]
-pub fn solve_p1(input: &Vec<(String, i16)>) -> State {
+pub fn solve_p1(input: &Vec<Op>) -> State {
     let mut seen_lines = HashSet::new();
     let mut curr = 0;
     let mut acc = 0;
@@ -45,19 +53,18 @@ pub fn solve_p1(input: &Vec<(String, i16)>) -> State {
             break;
         }
 
-        let (op, num) = &input[curr];
-        match op.as_ref() {
-            "acc" => {
-                acc = acc + num;
-                curr = curr + 1;
+        let op = input[curr];
+        match op {
+            Op::Acc(val) => {
+                acc += val;
+                curr += 1;
             }
-            "jmp" => {
-                curr = curr + *num as usize;
+            Op::Jmp(val) => {
+                curr += val as usize;
             }
-            "nop" => {
-                curr = curr + 1;
+            Op::Nop(_) => {
+                curr += 1;
             }
-            _ => unimplemented!(),
         }
     }
 
@@ -77,26 +84,32 @@ impl std::fmt::Display for State {
 }
 
 #[aoc(day8, part2)]
-pub fn solve_p2(input: &Vec<(String, i16)>) -> State {
+pub fn solve_p2(input: &Vec<Op>) -> State {
     let mut asm = input.clone();
     let mut curr = 0;
     let mut state;
     loop {
-        let (op, num) = &input[curr];
-        let new_op = match op.as_ref() {
-            "jmp" => "nop",
-            "nop" => "jmp",
-            a => a,
-        };
+        let op = input[curr];
 
-        asm[curr] = (new_op.into(), *num);
+        match op {
+            Op::Acc(_) => {
+                curr += 1;
+                continue
+            }
+            Op::Jmp(val) => {
+                asm[curr] = Op::Nop(val);
+            }
+            Op::Nop(val) => {
+                asm[curr] = Op::Jmp(val);
+            }
+        }
 
         state = solve_p1(&asm);
         if state.index == input.len() {
             break;
         }
 
-        asm[curr] = (op.clone(), *num);
+        asm[curr] = op;
         curr += 1;
     }
 
