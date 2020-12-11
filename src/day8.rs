@@ -94,7 +94,7 @@ pub fn solve_p2(input: &Vec<Op>) -> State {
         match op {
             Op::Acc(_) => {
                 curr += 1;
-                continue
+                continue;
             }
             Op::Jmp(val) => {
                 asm[curr] = Op::Nop(val);
