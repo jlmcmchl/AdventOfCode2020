@@ -87,5 +87,7 @@ pub fn solve_p2(input: &Vec<u8>) -> u64 {
             // );
         });
 
-    permutations_to_end_from_ind[0] + permutations_to_end_from_ind[1] + permutations_to_end_from_ind[2]
+    permutations_to_end_from_ind[0]
+        + permutations_to_end_from_ind[1]
+        + permutations_to_end_from_ind[2]
 }
