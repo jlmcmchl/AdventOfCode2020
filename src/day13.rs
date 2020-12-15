@@ -51,10 +51,8 @@ pub fn solve_p2((_, buses): &(u64, Vec<Option<u64>>)) -> u64 {
         .enumerate()
         .filter_map(|(ind, v)| v.map(|bus| ((bus - (ind as u64 % bus)) % bus, bus)))
         .collect::<Vec<_>>();
-    // eqns.sort_by_cached_key(|(_, x)| -1 * *x as i64);
-    println!("{:?}", eqns);
-
-    assert!(eqns.iter().all(|(a, n)| 1058443396696792 % n == *a));
+    eqns.sort_by_cached_key(|(_, x)| -1 * *x as i64);
+    // println!("{:?}", eqns);
 
     chinese_remainder_theorem(eqns)
 }
