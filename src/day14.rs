@@ -65,7 +65,7 @@ fn mask_base(val: usize, mask: &HashMap<u8, u8>) -> usize {
 fn apply_mask2(val: usize, mask: &HashMap<u8, u8>) -> Vec<usize> {
     let count = 35 - mask.len();
     let base = mask_base(val, mask);
-    let res = (0..2 << count)
+    (0..2 << count)
         .map(|filler| {
             (0..36)
                 .filter(|v| !mask.contains_key(v))
@@ -74,13 +74,11 @@ fn apply_mask2(val: usize, mask: &HashMap<u8, u8>) -> Vec<usize> {
                     acc | ((filler >> filler_ind) & 1) << key_ind
                 })
         })
-        .collect();
-
-    res
+        .collect()
 }
 
 #[aoc(day14, part1)]
-pub fn solve_p1(input: &Vec<Op>) -> u64 {
+pub fn solve_p1(input: &[Op]) -> u64 {
     let mut mask = &Default::default();
     let mut mem: HashMap<usize, u64> = Default::default();
 
@@ -95,7 +93,7 @@ pub fn solve_p1(input: &Vec<Op>) -> u64 {
 }
 
 #[aoc(day14, part2)]
-pub fn solve_p2(input: &Vec<Op>) -> u64 {
+pub fn solve_p2(input: &[Op]) -> u64 {
     let mut mask = &Default::default();
     let mut mem: HashMap<usize, u64> = Default::default();
 

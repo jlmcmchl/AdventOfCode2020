@@ -13,12 +13,12 @@ pub fn input_generator(input: &str) -> Vec<u16> {
 }
 
 #[aoc(day5, part1)]
-pub fn solve_p1(input: &Vec<u16>) -> u16 {
+pub fn solve_p1(input: &[u16]) -> u16 {
     input.iter().fold(0, |acc, x| acc.max(*x))
 }
 
 #[aoc(day5, part2)]
-pub fn solve_p2(input: &Vec<u16>) -> u16 {
+pub fn solve_p2(input: &[u16]) -> u16 {
     let max = input.iter().fold(0, |acc, x| acc.max(*x));
     let min = input.iter().fold(max, |acc, x| acc.min(*x));
     let seat = (min..=max)

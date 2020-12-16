@@ -8,14 +8,14 @@ pub fn input_generator(input: &str) -> Vec<u64> {
     input.lines().map(|u| u.parse::<u64>().unwrap()).collect()
 }
 
-fn is_predicated(e: u64, queue: &Vec<u64>) -> bool {
+fn is_predicated(e: u64, queue: &[u64]) -> bool {
     let set: HashSet<_> = queue.iter().collect();
 
     set.iter().tuple_combinations().any(|(a, b)| **a + **b == e)
 }
 
 #[aoc(day9, part1)]
-pub fn solve_p1(input: &Vec<u64>) -> u64 {
+pub fn solve_p1(input: &[u64]) -> u64 {
     let mut queue = Vec::new();
 
     input.iter().take(25).for_each(|e| queue.push(*e));
@@ -34,7 +34,7 @@ pub fn solve_p1(input: &Vec<u64>) -> u64 {
 }
 
 #[aoc(day9, part2)]
-pub fn solve_p2(input: &Vec<u64>) -> u64 {
+pub fn solve_p2(input: &[u64]) -> u64 {
     let target = solve_p1(input);
 
     let mut i = 0;

@@ -43,7 +43,7 @@ pub fn input_generator(input: &str) -> Vec<Op> {
 }
 
 #[aoc(day8, part1)]
-pub fn solve_p1(input: &Vec<Op>) -> State {
+pub fn solve_p1(input: &[Op]) -> State {
     let mut seen_lines = HashSet::new();
     let mut curr = 0;
     let mut acc = 0;
@@ -84,8 +84,8 @@ impl std::fmt::Display for State {
 }
 
 #[aoc(day8, part2)]
-pub fn solve_p2(input: &Vec<Op>) -> State {
-    let mut asm = input.clone();
+pub fn solve_p2(input: &[Op]) -> State {
+    let mut asm = input.to_owned();
     let mut curr = 0;
     let mut state;
     loop {

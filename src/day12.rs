@@ -135,13 +135,13 @@ impl FromStr for Instruction {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (first, rest) = s.split_at(1);
         match first {
-            "N" => rest.parse().map(|i| Instruction::North(i)),
-            "S" => rest.parse().map(|i| Instruction::South(i)),
-            "E" => rest.parse().map(|i| Instruction::East(i)),
-            "W" => rest.parse().map(|i| Instruction::West(i)),
-            "L" => rest.parse().map(|i| Instruction::Left(i)),
-            "R" => rest.parse().map(|i| Instruction::Right(i)),
-            "F" => rest.parse().map(|i| Instruction::Forward(i)),
+            "N" => rest.parse().map(Instruction::North),
+            "S" => rest.parse().map(Instruction::South),
+            "E" => rest.parse().map(Instruction::East),
+            "W" => rest.parse().map(Instruction::West),
+            "L" => rest.parse().map(Instruction::Left),
+            "R" => rest.parse().map(Instruction::Right),
+            "F" => rest.parse().map(Instruction::Forward),
             _ => unreachable!(),
         }
     }
@@ -154,7 +154,7 @@ pub fn input_generator(input: &str) -> Vec<Instruction> {
 }
 
 #[aoc(day12, part1)]
-pub fn solve_p1(input: &Vec<Instruction>) -> i32 {
+pub fn solve_p1(input: &[Instruction]) -> i32 {
     // println!("{:?}", input);
 
     let mut state: State = Default::default();
@@ -163,7 +163,7 @@ pub fn solve_p1(input: &Vec<Instruction>) -> i32 {
 }
 
 #[aoc(day12, part2)]
-pub fn solve_p2(input: &Vec<Instruction>) -> i32 {
+pub fn solve_p2(input: &[Instruction]) -> i32 {
     let mut state = State {
         waypoint: (10, 1),
         ..Default::default()

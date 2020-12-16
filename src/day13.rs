@@ -8,7 +8,7 @@ pub fn input_generator(input: &str) -> (u64, Vec<Option<u64>>) {
 
     (
         lines[0].parse().unwrap(),
-        lines[1].split(",").map(|x| x.parse().ok()).collect(),
+        lines[1].split(',').map(|x| x.parse().ok()).collect(),
     )
 }
 
@@ -51,7 +51,7 @@ pub fn solve_p2((_, buses): &(u64, Vec<Option<u64>>)) -> u64 {
         .enumerate()
         .filter_map(|(ind, v)| v.map(|bus| ((bus - (ind as u64 % bus)) % bus, bus)))
         .collect::<Vec<_>>();
-    eqns.sort_by_cached_key(|(_, x)| -1 * *x as i64);
+    eqns.sort_by_cached_key(|(_, x)| -(*x as i64));
     // println!("{:?}", eqns);
 
     chinese_remainder_theorem(eqns)

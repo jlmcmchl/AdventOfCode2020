@@ -32,7 +32,9 @@ pub fn solve_p1(input: &HashMap<String, Vec<(u8, String)>>) -> usize {
             if !acc.contains_key(id) {
                 acc.insert(id, Vec::new());
             }
-            acc.get_mut(id).map(|i| i.push(k.clone()));
+            if let Some(i) = acc.get_mut(id) {
+                i.push(k.clone())
+            }
         });
         acc
     });
@@ -47,11 +49,11 @@ pub fn solve_p1(input: &HashMap<String, Vec<(u8, String)>>) -> usize {
             .fold(HashSet::new(), |mut acc, bag: &String| {
                 acc.insert(bag.clone());
 
-                inverted_map.get(bag).map(|v| {
+                if let Some(v) = inverted_map.get(bag) {
                     v.iter().for_each(|bag| {
                         acc.insert(bag.clone());
                     })
-                });
+                }
 
                 acc
             });

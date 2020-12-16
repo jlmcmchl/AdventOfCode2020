@@ -4,7 +4,11 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 #[aoc_generator(day15)]
 pub fn input_generator(input: &str) -> HashMap<usize, usize> {
-    input.split(",").enumerate().map(|(i,u)| (u.parse().unwrap(), i+1)).collect()
+    input
+        .split(',')
+        .enumerate()
+        .map(|(i, u)| (u.parse().unwrap(), i + 1))
+        .collect()
 }
 
 #[aoc(day15, part1)]
@@ -18,22 +22,22 @@ pub fn solve_p2(input: &HashMap<usize, usize>) -> usize {
 }
 
 fn nth_spoken_number(seed: &HashMap<usize, usize>, count: usize) -> usize {
-    let mut seed_entries = seed.iter().map(|(k, v)| (*k ,*v)).collect::<Vec<_>>();
-    seed_entries.sort_by_cached_key(|(_, v)| -1* (*v as isize));
+    let mut seed_entries = seed.iter().map(|(k, v)| (*k, *v)).collect::<Vec<_>>();
+    seed_entries.sort_by_cached_key(|(_, v)| -(*v as isize));
     let mut latest_entry = seed_entries[0];
-    let mut log: HashMap<_, _> = seed_entries.iter().skip(1).map(|i| *i).collect();
+    let mut log: HashMap<_, _> = seed_entries.iter().skip(1).copied().collect();
 
     let mut i = seed.iter().map(|(_, v)| *v).max().unwrap() + 1;
 
     while i <= count {
         let new_num = match log.get(&latest_entry.0) {
-            Some(v) => i - v.clone() - 1,
-            None => 0
+            Some(v) => i - *v - 1,
+            None => 0,
         };
 
         log.insert(latest_entry.0, latest_entry.1);
-        latest_entry = (new_num, i);        
-        i+=1;
+        latest_entry = (new_num, i);
+        i += 1;
     }
 
     latest_entry.0

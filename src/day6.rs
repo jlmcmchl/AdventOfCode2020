@@ -7,17 +7,12 @@ pub fn input_generator(input: &str) -> Vec<Vec<Vec<u8>>> {
     // let input = "abc\n\na\nb\nc\n\nab\nac\n\na\na\na\na\n\nb";
     input
         .split("\n\n")
-        .map(|votes| {
-            votes
-                .lines()
-                .map(|line| line.as_bytes().iter().cloned().collect())
-                .collect()
-        })
+        .map(|votes| votes.lines().map(|line| line.as_bytes().to_vec()).collect())
         .collect()
 }
 
 #[aoc(day6, part1)]
-pub fn solve_p1(input: &Vec<Vec<Vec<u8>>>) -> usize {
+pub fn solve_p1(input: &[Vec<Vec<u8>>]) -> usize {
     input
         .iter()
         .map(|set| {
@@ -34,7 +29,7 @@ pub fn solve_p1(input: &Vec<Vec<Vec<u8>>>) -> usize {
 }
 
 #[aoc(day6, part2)]
-pub fn solve_p2(input: &Vec<Vec<Vec<u8>>>) -> usize {
+pub fn solve_p2(input: &[Vec<Vec<u8>>]) -> usize {
     input
         .iter()
         .map(|set| {

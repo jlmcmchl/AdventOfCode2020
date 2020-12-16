@@ -45,7 +45,7 @@ pub fn input_generator(input: &str) -> Vec<HashMap<String, String>> {
 }
 
 #[aoc(day4, part1)]
-pub fn solve_p1(input: &Vec<HashMap<String, String>>) -> u64 {
+pub fn solve_p1(input: &[HashMap<String, String>]) -> u64 {
     input
         .iter()
         .map(|passport| if validate_fields(passport) { 1 } else { 0 })
@@ -64,14 +64,10 @@ fn validate_fields(input: &HashMap<String, String>) -> bool {
 }
 
 #[aoc(day4, part2)]
-pub fn solve_p2(input: &Vec<HashMap<String, String>>) -> u64 {
+pub fn solve_p2(input: &[HashMap<String, String>]) -> u64 {
     input
         .iter()
-        .map(|passport| {
-            let res = if validate_fields2(passport) { 1 } else { 0 };
-            // println!("{} {:?}", res, passport);
-            res
-        })
+        .map(|passport| if validate_fields2(passport) { 1 } else { 0 })
         .sum()
 }
 
@@ -88,9 +84,7 @@ fn validate_fields2(input: &HashMap<String, String>) -> bool {
 
 fn check_byr(entry: Option<(&String, &String)>) -> bool {
     if let Some((_, v)) = entry {
-        let res = v.parse::<i32>().unwrap() >= 1920 && v.parse::<i32>().unwrap() <= 2002;
-        // println!("\tbyr: {}, {}", res, v);
-        res
+        v.parse::<i32>().unwrap() >= 1920 && v.parse::<i32>().unwrap() <= 2002
     } else {
         false
     }
@@ -98,9 +92,7 @@ fn check_byr(entry: Option<(&String, &String)>) -> bool {
 
 fn check_iyr(entry: Option<(&String, &String)>) -> bool {
     if let Some((_, v)) = entry {
-        let res = v.parse::<i32>().unwrap() >= 2010 && v.parse::<i32>().unwrap() <= 2020;
-        // println!("\tiyr: {}, {}", res, v);
-        res
+        v.parse::<i32>().unwrap() >= 2010 && v.parse::<i32>().unwrap() <= 2020
     } else {
         false
     }
@@ -108,9 +100,7 @@ fn check_iyr(entry: Option<(&String, &String)>) -> bool {
 
 fn check_eyr(entry: Option<(&String, &String)>) -> bool {
     if let Some((_, v)) = entry {
-        let res = v.parse::<i32>().unwrap() >= 2020 && v.parse::<i32>().unwrap() <= 2030;
-        // println!("\teyr: {}, {}", res, v);
-        res
+        v.parse::<i32>().unwrap() >= 2020 && v.parse::<i32>().unwrap() <= 2030
     } else {
         false
     }
@@ -118,42 +108,34 @@ fn check_eyr(entry: Option<(&String, &String)>) -> bool {
 
 fn check_hgt(entry: Option<(&String, &String)>) -> bool {
     if let Some((_, v)) = entry {
-        let res = if v.ends_with("cm") {
+        if v.ends_with("cm") {
             if let Some(Ok(val)) = v.strip_suffix("cm").and_then(|i| i.parse::<i32>().into()) {
-                val >= 150 && val <= 193
+                (150..=193).contains(&val)
             } else {
                 false
             }
         } else if v.ends_with("in") {
             if let Some(Ok(val)) = v.strip_suffix("in").and_then(|i| i.parse::<i32>().into()) {
-                val >= 59 && val <= 76
+                (59..=76).contains(&val)
             } else {
                 false
             }
         } else {
             false
-        };
-        // println!("\thgt: {}, {}", res, v);
-        res
+        }
     } else {
         false
     }
 }
 fn check_hcl(entry: Option<(&String, &String)>) -> bool {
     if let Some((_, v)) = entry {
-        let res = if v.len() == 7 && v.starts_with("#") {
-            let num = v.strip_prefix("#").unwrap();
+        if v.len() == 7 && v.starts_with('#') {
+            let num = v.strip_prefix('#').unwrap();
             let res: IResult<&[u8], u32> = hex_u32(num.as_bytes());
-            if let Ok(_) = res {
-                true
-            } else {
-                false
-            }
+            res.is_ok()
         } else {
             false
-        };
-        // println!("\thcl: {} {}", res, v);
-        res
+        }
     } else {
         false
     }
@@ -162,9 +144,7 @@ fn check_hcl(entry: Option<(&String, &String)>) -> bool {
 fn check_ecl(entry: Option<(&String, &String)>) -> bool {
     let opts = vec!["amb", "blu", "brn", "gry", "grn", "hzl", "oth"];
     if let Some((_, v)) = entry {
-        let res = opts.contains(&(*v).as_str());
-        // println!("\tecl: {} {}", res, v);
-        res
+        opts.contains(&(*v).as_str())
     } else {
         false
     }
@@ -172,22 +152,8 @@ fn check_ecl(entry: Option<(&String, &String)>) -> bool {
 
 fn check_pid(entry: Option<(&String, &String)>) -> bool {
     if let Some((_, v)) = entry {
-        let res = v.len() == 9 && v.parse::<u32>().is_ok();
-        // println!("\tpid: {} {}", res, v);
-        res
+        v.len() == 9 && v.parse::<u32>().is_ok()
     } else {
         false
     }
 }
-
-/*
-
-byr (Birth Year)
-iyr (Issue Year)
-eyr (Expiration Year)
-hgt (Height)
-hcl (Hair Color)
-ecl (Eye Color)
-pid (Passport ID)
-cid (Country ID)
-*/

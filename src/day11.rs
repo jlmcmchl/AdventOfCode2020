@@ -70,7 +70,7 @@ impl Into<State> for u8 {
 #[aoc_generator(day11)]
 pub fn input_generator(input: &str) -> ((usize, usize), Vec<State>) {
     // let input = "L.LL.LL.LL\nLLLLLLL.LL\nL.L.L..L..\nLLLL.LL.LL\nL.LL.LL.LL\nL.LLLLL.LL\n..L.L.....\nLLLLLLLLLL\nL.LLLLLL.L\nL.LLLLL.LL";
-    let height = input.as_bytes().iter().filter(|c| **c == b'\n').count() + 1;
+    let height = bytecount::count(input.as_bytes(), b'\n') + 1;
     let width = input.as_bytes().iter().take_while(|c| **c != b'\n').count();
     let layout = input
         .as_bytes()
@@ -91,39 +91,39 @@ fn coord_to_index(y: usize, x: usize, (_, width): &(usize, usize)) -> usize {
     y * width + x
 }
 
-fn nearby_filled_seats((y, x): (usize, usize), spec: &(usize, usize), layout: &Vec<State>) -> u8 {
+fn nearby_filled_seats((y, x): (usize, usize), spec: &(usize, usize), layout: &[State]) -> u8 {
     let mut cnt = 0;
 
     if x > 0 && y > 0 {
-        cnt = cnt + layout[coord_to_index(y - 1, x - 1, spec)].value();
+        cnt += layout[coord_to_index(y - 1, x - 1, spec)].value();
     }
 
     if y > 0 {
-        cnt = cnt + layout[coord_to_index(y - 1, x, spec)].value();
+        cnt += layout[coord_to_index(y - 1, x, spec)].value();
     }
 
     if x < spec.1 - 1 && y > 0 {
-        cnt = cnt + layout[coord_to_index(y - 1, x + 1, spec)].value();
+        cnt += layout[coord_to_index(y - 1, x + 1, spec)].value();
     }
 
     if x > 0 {
-        cnt = cnt + layout[coord_to_index(y, x - 1, spec)].value();
+        cnt += layout[coord_to_index(y, x - 1, spec)].value();
     }
 
     if x < spec.1 - 1 {
-        cnt = cnt + layout[coord_to_index(y, x + 1, spec)].value();
+        cnt += layout[coord_to_index(y, x + 1, spec)].value();
     }
 
     if x > 0 && y < spec.0 - 1 {
-        cnt = cnt + layout[coord_to_index(y + 1, x - 1, spec)].value();
+        cnt += layout[coord_to_index(y + 1, x - 1, spec)].value();
     }
 
     if y < spec.0 - 1 {
-        cnt = cnt + layout[coord_to_index(y + 1, x, spec)].value();
+        cnt += layout[coord_to_index(y + 1, x, spec)].value();
     }
 
     if x < spec.1 - 1 && y < spec.0 - 1 {
-        cnt = cnt + layout[coord_to_index(y + 1, x + 1, spec)].value();
+        cnt += layout[coord_to_index(y + 1, x + 1, spec)].value();
     }
 
     cnt
@@ -133,7 +133,7 @@ fn nearest_seat_in_direction(
     (y, x): (usize, usize),
     (dy, dx): (isize, isize),
     spec: &(usize, usize),
-    layout: &Vec<State>,
+    layout: &[State],
 ) -> State {
     let mut curr_y = y as isize;
     let mut curr_x = x as isize;
@@ -153,39 +153,39 @@ fn nearest_seat_in_direction(
     }
 }
 
-fn nearby_filled_seats2((y, x): (usize, usize), spec: &(usize, usize), layout: &Vec<State>) -> u8 {
+fn nearby_filled_seats2((y, x): (usize, usize), spec: &(usize, usize), layout: &[State]) -> u8 {
     let mut cnt = 0;
 
     if x > 0 && y > 0 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (-1, -1), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (-1, -1), spec, layout).value();
     }
 
     if y > 0 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (-1, 0), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (-1, 0), spec, layout).value();
     }
 
     if x < spec.1 - 1 && y > 0 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (-1, 1), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (-1, 1), spec, layout).value();
     }
 
     if x > 0 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (0, -1), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (0, -1), spec, layout).value();
     }
 
     if x < spec.1 - 1 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (0, 1), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (0, 1), spec, layout).value();
     }
 
     if x > 0 && y < spec.0 - 1 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (1, -1), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (1, -1), spec, layout).value();
     }
 
     if y < spec.0 - 1 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (1, 0), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (1, 0), spec, layout).value();
     }
 
     if x < spec.1 - 1 && y < spec.0 - 1 {
-        cnt = cnt + nearest_seat_in_direction((y, x), (1, 1), spec, layout).value();
+        cnt += nearest_seat_in_direction((y, x), (1, 1), spec, layout).value();
     }
 
     cnt

@@ -8,9 +8,9 @@ pub fn input_generator(input: &str) -> Vec<u8> {
 }
 
 #[aoc(day10, part1)]
-pub fn solve_p1(input: &Vec<u8>) -> usize {
-    let mut arr = input.clone();
-    arr.sort();
+pub fn solve_p1(input: &[u8]) -> usize {
+    let mut arr = input.iter().copied().collect::<Vec<_>>();
+    arr.sort_unstable();
 
     let jumps = arr.windows(2).fold((1, 1), |(ones, threes), window| {
         if window[0] + 1 == window[1] {
@@ -28,9 +28,9 @@ pub fn solve_p1(input: &Vec<u8>) -> usize {
 }
 
 #[aoc(day10, part2)]
-pub fn solve_p2(input: &Vec<u8>) -> u64 {
-    let mut adapters = input.clone();
-    adapters.sort();
+pub fn solve_p2(input: &[u8]) -> u64 {
+    let mut adapters = input.iter().copied().collect::<Vec<_>>();
+    adapters.sort_unstable();
     let mut permutations_to_end_from_ind = vec![0; adapters.len()];
 
     adapters
