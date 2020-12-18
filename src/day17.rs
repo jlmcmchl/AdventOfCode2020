@@ -46,12 +46,10 @@ fn step(state: &HashSet<(i8, i8, i8)>) -> HashSet<(i8, i8, i8)> {
                 } else {
                     None
                 }
+            } else if *count == 3 {
+                Some(point)
             } else {
-                if *count == 3 {
-                    Some(point)
-                } else {
-                    None
-                }
+                None
             }
         })
         .copied()
@@ -112,7 +110,7 @@ fn step2(state: &HashSet<(i8, i8, i8, i8)>) -> HashSet<(i8, i8, i8, i8)> {
                     point.0 - 1 + (e % 3),
                     point.1 - 1 + (e / 3 % 3),
                     point.2 - 1 + (e / 9 % 3),
-                    point.3 - 1 + (e / 27)
+                    point.3 - 1 + (e / 27),
                 )
             })
             .for_each(|point| {
@@ -130,12 +128,10 @@ fn step2(state: &HashSet<(i8, i8, i8, i8)>) -> HashSet<(i8, i8, i8, i8)> {
                 } else {
                     None
                 }
+            } else if *count == 3 {
+                Some(point)
             } else {
-                if *count == 3 {
-                    Some(point)
-                } else {
-                    None
-                }
+                None
             }
         })
         .copied()
@@ -145,15 +141,19 @@ fn step2(state: &HashSet<(i8, i8, i8, i8)>) -> HashSet<(i8, i8, i8, i8)> {
 #[aoc(day17, part2)]
 pub fn solve_p2(input: &HashSet<(i8, i8, i8)>) -> usize {
     let mut state = input.iter().map(|(x, y, z)| (*x, *y, *z, 0)).collect();
-    assert_eq!((0..81).map(|i| (
-        (
-            -1 + (i % 3),
-            -1 + (i / 3 % 3),
-            -1 + (i / 9 % 3),
-            -1 + (i / 27)
-        )
-    )).collect::<HashSet<_>>().len(), 81);
-    
+    assert_eq!(
+        (0..81)
+            .map(|i| (
+                -1 + (i % 3),
+                -1 + (i / 3 % 3),
+                -1 + (i / 9 % 3),
+                -1 + (i / 27)
+            ))
+            .collect::<HashSet<_>>()
+            .len(),
+        81
+    );
+
     for _i in 0..6 {
         state = step2(&state);
     }
