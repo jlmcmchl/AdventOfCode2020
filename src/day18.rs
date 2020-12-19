@@ -139,11 +139,11 @@ fn shunting_yard(input: &[Token]) -> Vec<Token> {
             while other.is_some() {
                 match order(tok.clone(), other.clone().unwrap()) {
                     Precedence::Higher => {
-                        operators.push(other.clone().unwrap());
+                        operators.push(other.unwrap());
                         break;
                     }
                     Precedence::Equal | Precedence::Lower => {
-                        output.push(other.clone().unwrap());
+                        output.push(other.unwrap());
                     }
                 }
                 other = operators.pop();
