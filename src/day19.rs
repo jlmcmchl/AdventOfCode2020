@@ -138,6 +138,7 @@ pub fn solve_p1((rules, tests): &(HashMap<u8, Rule>, Vec<String>)) -> usize {
         .count()
 }
 
+// Upping the Ante: From the rules, generate a HashMap<u8, Box<dyn FnMut(&str) -> IResult<&str, ()>>> (with any required pin/box/rc/etc) that can be used to parse each line just by calling `map[0](input)?`
 #[aoc(day19, part2)]
 pub fn solve_p2((rules, tests): &(HashMap<u8, Rule>, Vec<String>)) -> usize {
     let mut all_rules = "8: 42 | 42 8\n11: 42 31 | 42 11 31"
@@ -152,8 +153,7 @@ pub fn solve_p2((rules, tests): &(HashMap<u8, Rule>, Vec<String>)) -> usize {
     tests
         .iter()
         .filter(|line| {
-            apply_rule_42(&all_rules, line.as_str())
-                .map_or(false, |(i, _)| i.is_empty())
+            apply_rule_42(&all_rules, line.as_str()).map_or(false, |(i, _)| i.is_empty())
         })
         .count()
 }
