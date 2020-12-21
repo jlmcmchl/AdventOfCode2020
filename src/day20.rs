@@ -8,7 +8,7 @@ use std::{
 use aoc_runner_derive::{aoc, aoc_generator};
 use nalgebra::{
     storage::Storage, ArrayStorage, Dim, DimName, Matrix, MatrixN, MatrixSlice, Scalar, U1, U10,
-    U109, U28,
+    U96, U24, U8,
 };
 use nom::{
     bytes::complete::{tag, take},
@@ -174,15 +174,15 @@ impl Utilities<Pixel, U10, ArrayStorage<Pixel, U10, U10>> for MatrixN<Pixel, U10
     }
 }
 
-impl Utilities<Pixel, U28, ArrayStorage<Pixel, U28, U28>> for MatrixN<Pixel, U28> {
+impl Utilities<Pixel, U24, ArrayStorage<Pixel, U24, U24>> for MatrixN<Pixel, U24> {
     fn first_row(
         &self,
     ) -> MatrixSlice<
         Pixel,
         U1,
-        U28,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::RStride,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::CStride,
+        U24,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::RStride,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::CStride,
     > {
         self.row(0)
     }
@@ -192,21 +192,21 @@ impl Utilities<Pixel, U28, ArrayStorage<Pixel, U28, U28>> for MatrixN<Pixel, U28
     ) -> MatrixSlice<
         Pixel,
         U1,
-        U28,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::RStride,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::CStride,
+        U24,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::RStride,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::CStride,
     > {
-        self.row(27)
+        self.row(23)
     }
 
     fn first_column(
         &self,
     ) -> MatrixSlice<
         Pixel,
-        U28,
+        U24,
         U1,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::RStride,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::CStride,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::RStride,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::CStride,
     > {
         self.column(0)
     }
@@ -215,28 +215,28 @@ impl Utilities<Pixel, U28, ArrayStorage<Pixel, U28, U28>> for MatrixN<Pixel, U28
         &self,
     ) -> MatrixSlice<
         Pixel,
-        U28,
+        U24,
         U1,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::RStride,
-        <ArrayStorage<Pixel, U28, U28> as Storage<Pixel, U28, U28>>::CStride,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::RStride,
+        <ArrayStorage<Pixel, U24, U24> as Storage<Pixel, U24, U24>>::CStride,
     > {
-        self.column(27)
+        self.column(23)
     }
 
     fn mirror_horizontal(&self) -> Self {
-        Matrix::<_, U28, U28, _>::from_fn(|i, j| self[(i, 27 - j)])
+        Matrix::<_, U24, U24, _>::from_fn(|i, j| self[(i, 23 - j)])
     }
 
     fn mirror_vertical(&self) -> Self {
-        Matrix::<_, U28, U28, _>::from_fn(|i, j| self[(27 - i, j)])
+        Matrix::<_, U24, U24, _>::from_fn(|i, j| self[(23 - i, j)])
     }
 
     fn rotate_clockwise(&self) -> Self {
-        Matrix::<_, U28, U28, _>::from_fn(|i, j| self[(27 - j, i)])
+        Matrix::<_, U24, U24, _>::from_fn(|i, j| self[(23 - j, i)])
     }
 
     fn rotate_counterclockwise(&self) -> Self {
-        Matrix::<_, U28, U28, _>::from_fn(|i, j| self[(j, 27 - i)])
+        Matrix::<_, U24, U24, _>::from_fn(|i, j| self[(j, 23 - i)])
     }
 
     fn to_orientation(&self, orient: Orientation) -> Self
@@ -244,7 +244,7 @@ impl Utilities<Pixel, U28, ArrayStorage<Pixel, U28, U28>> for MatrixN<Pixel, U28
         Self: Sized,
     {
         match orient {
-            Orientation::Normal0 => Matrix::<_, U28, U28, _>::from_fn(|i, j| self[(i, j)]),
+            Orientation::Normal0 => Matrix::<_, U24, U24, _>::from_fn(|i, j| self[(i, j)]),
             Orientation::Normal90 => self.rotate_clockwise(),
             Orientation::Normal180 => self.mirror_vertical(),
             Orientation::Normal270 => self.rotate_counterclockwise(),
@@ -255,16 +255,16 @@ impl Utilities<Pixel, U28, ArrayStorage<Pixel, U28, U28>> for MatrixN<Pixel, U28
         }
     }
 }
-/*
-impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, U109> {
+
+impl Utilities<Pixel, U96, ArrayStorage<Pixel, U96, U96>> for MatrixN<Pixel, U96> {
     fn first_row(
         &self,
     ) -> MatrixSlice<
         Pixel,
         U1,
-        U109,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::RStride,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::CStride,
+        U96,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::RStride,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::CStride,
     > {
         self.row(0)
     }
@@ -274,21 +274,21 @@ impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, 
     ) -> MatrixSlice<
         Pixel,
         U1,
-        U109,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::RStride,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::CStride,
+        U96,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::RStride,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::CStride,
     > {
-        self.row(108)
+        self.row(95)
     }
 
     fn first_column(
         &self,
     ) -> MatrixSlice<
         Pixel,
-        U109,
+        U96,
         U1,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::RStride,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::CStride,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::RStride,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::CStride,
     > {
         self.column(0)
     }
@@ -297,28 +297,28 @@ impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, 
         &self,
     ) -> MatrixSlice<
         Pixel,
-        U109,
+        U96,
         U1,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::RStride,
-        <ArrayStorage<Pixel, U109, U109> as Storage<Pixel, U109, U109>>::CStride,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::RStride,
+        <ArrayStorage<Pixel, U96, U96> as Storage<Pixel, U96, U96>>::CStride,
     > {
-        self.column(108)
+        self.column(95)
     }
 
     fn mirror_horizontal(&self) -> Self {
-        Matrix::<_, U109, U109, _>::from_fn(|i, j| self[(i, 108 - j)])
+        Matrix::<_, U96, U96, _>::from_fn(|i, j| self[(i, 95 - j)])
     }
 
     fn mirror_vertical(&self) -> Self {
-        Matrix::<_, U109, U109, _>::from_fn(|i, j| self[(108 - i, j)])
+        Matrix::<_, U96, U96, _>::from_fn(|i, j| self[(95 - i, j)])
     }
 
     fn rotate_clockwise(&self) -> Self {
-        Matrix::<_, U109, U109, _>::from_fn(|i, j| self[(108 - j, i)])
+        Matrix::<_, U96, U96, _>::from_fn(|i, j| self[(95 - j, i)])
     }
 
     fn rotate_counterclockwise(&self) -> Self {
-        Matrix::<_, U109, U109, _>::from_fn(|i, j| self[(j, 108 - i)])
+        Matrix::<_, U96, U96, _>::from_fn(|i, j| self[(j, 95 - i)])
     }
 
     fn to_orientation(&self, orient: Orientation) -> Self
@@ -326,7 +326,7 @@ impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, 
         Self: Sized,
     {
         match orient {
-            Orientation::Normal0 => Matrix::<_, U109, U109, _>::from_fn(|i, j| self[(i, j)]),
+            Orientation::Normal0 => Matrix::<_, U96, U96, _>::from_fn(|i, j| self[(i, j)]),
             Orientation::Normal90 => self.rotate_clockwise(),
             Orientation::Normal180 => self.mirror_vertical(),
             Orientation::Normal270 => self.rotate_counterclockwise(),
@@ -337,7 +337,7 @@ impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, 
         }
     }
 }
-*/
+
 
 fn parse_tile(input: &str) -> IResult<&str, (usize, MatrixN<Pixel, U10>)> {
     let (input, _) = tag("Tile ")(input)?;
@@ -472,6 +472,44 @@ fn orient(
     .unwrap()
 }
 
+fn get_north(
+    (row, col): (usize, usize),
+    tiles: &Vec<(usize, MatrixN<Pixel, U10>)>,
+) -> Option<usize> {
+    if row > 0 {
+        let rowlen = (tiles.len() - col) / row;
+        let ind = row * rowlen + col - rowlen;
+        // println!("\t{}/{} -> {}", row, col, ind);
+
+        let (_, tile) = tiles[ind];
+
+        Some(as_number(&tile.last_row()))
+    } else {
+        None
+    }
+}
+
+fn get_west(
+    (row, col): (usize, usize),
+    tiles: &Vec<(usize, MatrixN<Pixel, U10>)>,
+) -> Option<usize> {
+    if col > 0 {
+        let ind = if row > 0 {
+            let rowlen = (tiles.len() - col) / row;
+            row * rowlen + col - 1
+        } else {
+            col - 1
+        };
+
+        // println!("\t{}/{} -> {}", row, col, ind);
+        let (_, tile) = tiles[ind];
+
+        Some(as_number(&tile.last_column()))
+    } else {
+        None
+    }
+}
+
 fn stitch<D: Dim + DimName>(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> MatrixN<Pixel, D>
 where
     <D as DimName>::Value: Mul,
@@ -482,13 +520,30 @@ where
     let connections = connections(tiles);
     let mut target = Matrix::<_, D, D, _>::from_fn(|_, _| Pixel::Off);
 
+    let mut ids = Vec::new();
+
+    // println!("{:?}", connections);
+
     let count = tiles.len();
     for col in (0..).take_while(|x| x * x < count) {
         for row in (0..).take_while(|x| x * x < count) {
-            let (id, tile) = if (col, row) == (0, 0) {
-                // first tile
-                // println!("{}/{} -> None None", col, row);
+            // everything else
+            let north = get_north((col, row), &ids);
+            let west = get_west((col, row), &ids);
+            // println!("{}/{} -> {:?} {:?}", col, row, north, west);
 
+            let (id, tile) = if let Some(connection) = north.or(west) {
+                let id = connections[&connection]
+                    .iter()
+                    .filter(|e| !used.contains(*e))
+                    .next()
+                    .unwrap();
+
+                let tile = orient(&tiles[&id], north, west, &connections);
+
+                (id, tile)
+            } else {
+                // first tile
                 tiles
                     .iter()
                     .filter(|(id, _)| {
@@ -501,53 +556,25 @@ where
                     .map(|(id, tile)| (id, orient(tile, None, None, &connections)))
                     .next()
                     .unwrap()
-            } else if col == 0 {
-                //first row
-                let west = as_number(&target.slice((9 * col, 9 * row), (10, 1)));
-                // println!("{}/{} -> None {:?}", col, row, Some(west));
-
-                let id = connections[&west]
-                    .iter()
-                    .filter(|e| !used.contains(*e))
-                    .next()
-                    .unwrap();
-                (id, orient(&tiles[&id], None, Some(west), &connections))
-            } else if row == 0 {
-                // first tile, later row
-                let north = as_number(&target.slice((9 * col, 9 * row), (1, 10)));
-                // println!("{}/{} -> {:?} None", col, row, Some(north));
-
-                let id = connections[&north]
-                    .iter()
-                    .filter(|e| !used.contains(*e))
-                    .next()
-                    .unwrap();
-                (id, orient(&tiles[&id], Some(north), None, &connections))
-            } else {
-                // everything else
-                let north = as_number(&target.slice((9 * col, 9 * row), (1, 10)));
-                let west = as_number(&target.slice((9 * col, 9 * row), (10, 1)));
-                // println!("{}/{} -> {:?} {:?}", col, row, Some(north), Some(west));
-
-                let id = connections[&north]
-                    .iter()
-                    .filter(|e| !used.contains(*e))
-                    .next()
-                    .unwrap();
-                (
-                    id,
-                    orient(&tiles[&id], Some(north), Some(west), &connections),
-                )
             };
 
-            used.insert(*id);
+            // println!("\t{}", id);
+
+            ids.push((*id, tile));
+
+            let tile = tile.fixed_slice::<U8, U8>(1, 1);
+
             target
-                .slice_mut((9 * col, 9 * row), (10, 10))
+                .fixed_slice_mut::<U8, U8>(col * 8, row * 8)
                 .iter_mut()
                 .enumerate()
-                .for_each(|(ind, pix)| *pix = tile[ind]);
+                .for_each(|(ind, val)| *val = tile[ind]);
+
+            used.insert(*id);
         }
     }
+
+    // ids.iter().for_each(|(id, tile)| println!("{}:{}", id, tile));
 
     target
 }
@@ -559,20 +586,24 @@ where
 .#..#..#..#..#..#...
  */
 
-
- // TODO: This is the last required step to fix my solution.
- // Then replace the necessary U28s to U109s and once it compiles we got it
-fn count_serpents(picture: &MatrixN<Pixel, U28>) -> usize {
+// TODO: This is the last required step to fix my solution.
+// Then replace the necessary U24s to U96s and once it compiles we got it
+fn count_serpents<D: DimName>(picture: &MatrixN<Pixel, D>) -> usize
+where
+    <D as DimName>::Value: Mul,
+    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<Pixel>,
+    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<usize>, 
+{
     let (rows, cols) = picture.shape();
 
     let mut count = 0;
 
     for j in 0..rows - 2 {
         for i in 0..cols - 19 {
-            println!("{} {} {} {}", i, j, cols, rows);
+            // println!("{} {} {} {}", i, j, cols, rows);
 
-            if /*picture.get((i + 18, j)) == Some(&Pixel::On)
-                &&*/ picture.get((i + 0, j + 1)) == Some(&Pixel::On)
+            if picture.get((i + 18, j)) == Some(&Pixel::On)
+                && picture.get((i + 0, j + 1)) == Some(&Pixel::On)
                 && picture.get((i + 1, j + 2)) == Some(&Pixel::On)
                 && picture.get((i + 4, j + 2)) == Some(&Pixel::On)
                 && picture.get((i + 5, j + 1)) == Some(&Pixel::On)
@@ -587,7 +618,7 @@ fn count_serpents(picture: &MatrixN<Pixel, U28>) -> usize {
                 && picture.get((i + 18, j + 1)) == Some(&Pixel::On)
                 && picture.get((i + 19, j + 1)) == Some(&Pixel::On)
             {
-                println!("\tFOUND");
+                // println!("\tFOUND");
                 count += 1;
             }
         }
@@ -596,7 +627,7 @@ fn count_serpents(picture: &MatrixN<Pixel, U28>) -> usize {
     count
 }
 
-fn serpent_count(picture: &MatrixN<Pixel, U28>) -> usize
+fn serpent_count(picture: &MatrixN<Pixel, U96>) -> usize
 //where
 //    <D as DimName>::Value: Mul,
 //    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<Pixel>,
@@ -626,15 +657,15 @@ fn serpent_count(picture: &MatrixN<Pixel, U28>) -> usize
             None
         }
     })
-    .next()
+    .max()
     .unwrap()
 }
 
 #[aoc(day20, part2)]
 pub fn solve_p2(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> usize {
-    let picture = stitch::<U28>(tiles);
+    let picture = stitch::<U96>(tiles);
 
-    println!("{}", picture);
+    // println!("{}", picture);
 
     picture
         .iter()

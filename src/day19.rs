@@ -153,8 +153,7 @@ pub fn solve_p2((rules, tests): &(HashMap<u8, Rule>, Vec<String>)) -> usize {
     tests
         .iter()
         .filter(|line| {
-            apply_rule_42(&all_rules, line.as_str())
-                .map_or(false, |(i, _)| i.is_empty())
+            apply_rule_42(&all_rules, line.as_str()).map_or(false, |(i, _)| i.is_empty())
         })
         .count()
 }
