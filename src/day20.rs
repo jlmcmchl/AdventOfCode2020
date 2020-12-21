@@ -442,7 +442,7 @@ fn orient(
     tile: &MatrixN<Pixel, U10>,
     north: Option<usize>,
     west: Option<usize>,
-    connections: &mut HashMap<usize, HashSet<usize>>,
+    connections: &HashMap<usize, HashSet<usize>>,
 ) -> MatrixN<Pixel, U10> {
     println!("{}", tile);
     match north {
@@ -454,56 +454,89 @@ fn orient(
                 let tn = as_number(&tile.first_row());
                 let tw = as_number(&tile.first_column());
 
-                println!("{}: {:?}", tn, connections.entry(tn));
-                println!("{}: {:?}", tw, connections.entry(tw));
-
                 // check north
                 if connections.contains_key(&tn) {
                     // north exists, use south
                     if connections.contains_key(&tw) {
                         // west exists, use south, east
-                        tile.to_orientation(Orientation::Flipped90)
+                        println!("south, east");
+
+                        if tw == west {
+                            println!("fuck");
+                            tile.to_orientation(Orientation::Normal180)
+                        } else {
+                            println!("fuck2");
+                            tile.to_orientation(Orientation::Flipped0)
+                        }
                     } else {
                         // use south, west
-                        tile.to_orientation(Orientation::Normal90)
+                        println!("south, west");
+
+                        if tw == west {
+                            println!("fuck");
+                            tile.to_orientation(Orientation::Normal90)
+                        } else {
+                            println!("fuck2");
+                            tile.to_orientation(Orientation::Flipped90)
+                        }
                     }
                 } else {
                     // use north
                     if connections.contains_key(&tw) {
                         // west exists, use north, east
-                        tile.to_orientation(Orientation::Flipped270)
+                        println!("north, east");
+                        if tw == west {
+                            println!("fuck");
+                            tile.to_orientation(Orientation::Normal270)
+                        } else {
+                            println!("fuck2");
+                            tile.to_orientation(Orientation::Flipped270)
+                        }
                     } else {
                         // it's correct
-                        tile.to_orientation(Orientation::Normal0)
+                        println!("north, west");
+
+                        if tw == west {
+                            println!("fuck");
+                            tile.to_orientation(Orientation::Normal0)
+                        } else {
+                            println!("fuck2");
+                            tile.to_orientation(Orientation::Flipped180)
+                        }
                     }
                 }
-            },
+            }
             None => {
                 // Upper Left corner
                 // Figure out which sides don't have any connections
                 let tn = as_number(&tile.first_row());
                 let tw = as_number(&tile.first_column());
 
-                println!("{}: {:?}", tn, connections.entry(tn));
-                println!("{}: {:?}", tw, connections.entry(tw));
-
                 // check north
                 if connections.contains_key(&tn) {
                     // north exists, use south
                     if connections.contains_key(&tw) {
                         // west exists, use south, east
-                        tile.to_orientation(Orientation::Flipped90)
+                        println!("south, east");
+
+                        tile.to_orientation(Orientation::Normal180)
                     } else {
                         // use south, west
+                        println!("south, west");
+
                         tile.to_orientation(Orientation::Normal90)
                     }
                 } else {
                     // use north
                     if connections.contains_key(&tw) {
                         // west exists, use north, east
-                        tile.to_orientation(Orientation::Flipped270)
+                        println!("north, east");
+
+                        tile.to_orientation(Orientation::Normal270)
                     } else {
                         // it's correct
+                        println!("north, west");
+
                         tile.to_orientation(Orientation::Normal0)
                     }
                 }
@@ -533,31 +566,21 @@ where
         .next()
         .unwrap();
 
-    let tile = orient(tile, None, None, &mut connections);
+    let tile = orient(tile, None, None, &connections);
 
-    used.insert(id);
+    used.insert(*id);
     target
         .slice_mut((0, 0), (10, 10))
         .iter_mut()
         .enumerate()
         .for_each(|(ind, pix)| *pix = tile[ind]);
 
-    let (id, tile) = tiles
-        .iter()
-        .filter(|(id, _)| !used.contains(id))
-        .filter(|(id, _)| {
-            connections
-                .iter()
-                .filter(|(_, set)| set.contains(id) && set.len() == 2)
-                .count()
-                == 4
-        })
-        .next()
-        .unwrap();
-
     let west = as_number(&target.slice((0, 9), (10, 1)));
-    let tile = orient(tile, None, Some(west), &mut connections);
-    used.insert(id);
+    let id = connections[&west].difference(&used).next().unwrap();
+    let tile = tiles[&id];
+
+    let tile = orient(&tile, None, Some(west), &connections);
+    used.insert(*id);
     target
         .slice_mut((0, 9), (10, 10))
         .iter_mut()
