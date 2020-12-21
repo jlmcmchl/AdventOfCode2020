@@ -3,7 +3,6 @@ use std::{
     fmt::Display,
     ops::Mul,
     str::FromStr,
-    unimplemented,
 };
 
 use aoc_runner_derive::{aoc, aoc_generator};
@@ -64,7 +63,7 @@ impl FromStr for Pixel {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy, Debug)]
 enum Orientation {
     Normal0,
     Normal90,
@@ -256,7 +255,7 @@ impl Utilities<Pixel, U28, ArrayStorage<Pixel, U28, U28>> for MatrixN<Pixel, U28
         }
     }
 }
-
+/*
 impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, U109> {
     fn first_row(
         &self,
@@ -338,6 +337,7 @@ impl Utilities<Pixel, U109, ArrayStorage<Pixel, U109, U109>> for MatrixN<Pixel, 
         }
     }
 }
+*/
 
 fn parse_tile(input: &str) -> IResult<&str, (usize, MatrixN<Pixel, U10>)> {
     let (input, _) = tag("Tile ")(input)?;
@@ -433,7 +433,7 @@ fn connections(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> HashMap<usize, Ha
             },
         )
         .iter()
-        .filter(|(id, tiles)| tiles.len() == 2)
+        .filter(|(_, tiles)| tiles.len() == 2)
         .map(|(ind, tiles)| (*ind, tiles.clone()))
         .collect()
 }
@@ -444,175 +444,203 @@ fn orient(
     west: Option<usize>,
     connections: &HashMap<usize, HashSet<usize>>,
 ) -> MatrixN<Pixel, U10> {
-    println!("{}", tile);
-    match north {
-        Some(north) => unimplemented!(),
-        None => match west {
-            Some(west) => {
-                // Upper Left corner
-                // Figure out which sides don't have any connections
-                let tn = as_number(&tile.first_row());
-                let tw = as_number(&tile.first_column());
+    vec![
+        Orientation::Normal0,
+        Orientation::Normal90,
+        Orientation::Normal180,
+        Orientation::Normal270,
+        Orientation::Flipped0,
+        Orientation::Flipped90,
+        Orientation::Flipped180,
+        Orientation::Flipped270,
+    ]
+    .iter()
+    .filter_map(|orient| {
+        let tile = tile.to_orientation(*orient);
+        let n_check = as_number(&tile.first_row());
+        let w_check = as_number(&tile.first_column());
 
-                // check north
-                if connections.contains_key(&tn) {
-                    // north exists, use south
-                    if connections.contains_key(&tw) {
-                        // west exists, use south, east
-                        println!("south, east");
-
-                        if tw == west {
-                            println!("fuck");
-                            tile.to_orientation(Orientation::Normal180)
-                        } else {
-                            println!("fuck2");
-                            tile.to_orientation(Orientation::Flipped0)
-                        }
-                    } else {
-                        // use south, west
-                        println!("south, west");
-
-                        if tw == west {
-                            println!("fuck");
-                            tile.to_orientation(Orientation::Normal90)
-                        } else {
-                            println!("fuck2");
-                            tile.to_orientation(Orientation::Flipped90)
-                        }
-                    }
-                } else {
-                    // use north
-                    if connections.contains_key(&tw) {
-                        // west exists, use north, east
-                        println!("north, east");
-                        if tw == west {
-                            println!("fuck");
-                            tile.to_orientation(Orientation::Normal270)
-                        } else {
-                            println!("fuck2");
-                            tile.to_orientation(Orientation::Flipped270)
-                        }
-                    } else {
-                        // it's correct
-                        println!("north, west");
-
-                        if tw == west {
-                            println!("fuck");
-                            tile.to_orientation(Orientation::Normal0)
-                        } else {
-                            println!("fuck2");
-                            tile.to_orientation(Orientation::Flipped180)
-                        }
-                    }
-                }
-            }
-            None => {
-                // Upper Left corner
-                // Figure out which sides don't have any connections
-                let tn = as_number(&tile.first_row());
-                let tw = as_number(&tile.first_column());
-
-                // check north
-                if connections.contains_key(&tn) {
-                    // north exists, use south
-                    if connections.contains_key(&tw) {
-                        // west exists, use south, east
-                        println!("south, east");
-
-                        tile.to_orientation(Orientation::Normal180)
-                    } else {
-                        // use south, west
-                        println!("south, west");
-
-                        tile.to_orientation(Orientation::Normal90)
-                    }
-                } else {
-                    // use north
-                    if connections.contains_key(&tw) {
-                        // west exists, use north, east
-                        println!("north, east");
-
-                        tile.to_orientation(Orientation::Normal270)
-                    } else {
-                        // it's correct
-                        println!("north, west");
-
-                        tile.to_orientation(Orientation::Normal0)
-                    }
-                }
-            }
-        },
-    }
+        if ((north.is_none() && !connections.contains_key(&n_check)) || north == Some(n_check))
+            && ((west.is_none() && !connections.contains_key(&w_check)) || west == Some(w_check))
+        {
+            Some(tile)
+        } else {
+            None
+        }
+    })
+    .next()
+    .unwrap()
 }
 
 fn stitch<D: Dim + DimName>(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> MatrixN<Pixel, D>
 where
     <D as DimName>::Value: Mul,
     <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<Pixel>,
+    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<usize>,
 {
     let mut used = HashSet::new();
-    let mut connections = connections(tiles);
+    let connections = connections(tiles);
     let mut target = Matrix::<_, D, D, _>::from_fn(|_, _| Pixel::Off);
 
-    let (id, tile) = tiles
-        .iter()
-        .filter(|(id, _)| {
-            connections
-                .iter()
-                .filter(|(_, set)| set.contains(id) && set.len() == 2)
-                .count()
-                == 4
-        })
-        .next()
-        .unwrap();
+    let count = tiles.len();
+    for col in (0..).take_while(|x| x * x < count) {
+        for row in (0..).take_while(|x| x * x < count) {
+            let (id, tile) = if (col, row) == (0, 0) {
+                // first tile
+                // println!("{}/{} -> None None", col, row);
 
-    let tile = orient(tile, None, None, &connections);
+                tiles
+                    .iter()
+                    .filter(|(id, _)| {
+                        connections
+                            .iter()
+                            .filter(|(_, set)| set.contains(id) && set.len() == 2)
+                            .count()
+                            == 4
+                    })
+                    .map(|(id, tile)| (id, orient(tile, None, None, &connections)))
+                    .next()
+                    .unwrap()
+            } else if col == 0 {
+                //first row
+                let west = as_number(&target.slice((9 * col, 9 * row), (10, 1)));
+                // println!("{}/{} -> None {:?}", col, row, Some(west));
 
-    used.insert(*id);
-    target
-        .slice_mut((0, 0), (10, 10))
-        .iter_mut()
-        .enumerate()
-        .for_each(|(ind, pix)| *pix = tile[ind]);
+                let id = connections[&west]
+                    .iter()
+                    .filter(|e| !used.contains(*e))
+                    .next()
+                    .unwrap();
+                (id, orient(&tiles[&id], None, Some(west), &connections))
+            } else if row == 0 {
+                // first tile, later row
+                let north = as_number(&target.slice((9 * col, 9 * row), (1, 10)));
+                // println!("{}/{} -> {:?} None", col, row, Some(north));
 
-    let west = as_number(&target.slice((0, 9), (10, 1)));
-    let id = connections[&west].difference(&used).next().unwrap();
-    let tile = tiles[&id];
+                let id = connections[&north]
+                    .iter()
+                    .filter(|e| !used.contains(*e))
+                    .next()
+                    .unwrap();
+                (id, orient(&tiles[&id], Some(north), None, &connections))
+            } else {
+                // everything else
+                let north = as_number(&target.slice((9 * col, 9 * row), (1, 10)));
+                let west = as_number(&target.slice((9 * col, 9 * row), (10, 1)));
+                // println!("{}/{} -> {:?} {:?}", col, row, Some(north), Some(west));
 
-    let tile = orient(&tile, None, Some(west), &connections);
-    used.insert(*id);
-    target
-        .slice_mut((0, 9), (10, 10))
-        .iter_mut()
-        .enumerate()
-        .for_each(|(ind, pix)| *pix = tile[ind]);
+                let id = connections[&north]
+                    .iter()
+                    .filter(|e| !used.contains(*e))
+                    .next()
+                    .unwrap();
+                (
+                    id,
+                    orient(&tiles[&id], Some(north), Some(west), &connections),
+                )
+            };
 
-    println!("{:?}", used);
+            used.insert(*id);
+            target
+                .slice_mut((9 * col, 9 * row), (10, 10))
+                .iter_mut()
+                .enumerate()
+                .for_each(|(ind, pix)| *pix = tile[ind]);
+        }
+    }
 
     target
 }
 
+/* Sea Monster:
+0123456789ABCDEFGHIJ
+..................#.
+#....##....##....###
+.#..#..#..#..#..#...
+ */
+
+
+ // TODO: This is the last required step to fix my solution.
+ // Then replace the necessary U28s to U109s and once it compiles we got it
+fn count_serpents(picture: &MatrixN<Pixel, U28>) -> usize {
+    let (rows, cols) = picture.shape();
+
+    let mut count = 0;
+
+    for j in 0..rows - 2 {
+        for i in 0..cols - 19 {
+            println!("{} {} {} {}", i, j, cols, rows);
+
+            if /*picture.get((i + 18, j)) == Some(&Pixel::On)
+                &&*/ picture.get((i + 0, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 1, j + 2)) == Some(&Pixel::On)
+                && picture.get((i + 4, j + 2)) == Some(&Pixel::On)
+                && picture.get((i + 5, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 6, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 7, j + 2)) == Some(&Pixel::On)
+                && picture.get((i + 10, j + 2)) == Some(&Pixel::On)
+                && picture.get((i + 11, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 12, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 13, j + 2)) == Some(&Pixel::On)
+                && picture.get((i + 16, j + 2)) == Some(&Pixel::On)
+                && picture.get((i + 17, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 18, j + 1)) == Some(&Pixel::On)
+                && picture.get((i + 19, j + 1)) == Some(&Pixel::On)
+            {
+                println!("\tFOUND");
+                count += 1;
+            }
+        }
+    }
+
+    count
+}
+
+fn serpent_count(picture: &MatrixN<Pixel, U28>) -> usize
+//where
+//    <D as DimName>::Value: Mul,
+//    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<Pixel>,
+//    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<usize>,
+{
+    vec![
+        Orientation::Normal0,
+        Orientation::Normal90,
+        Orientation::Normal180,
+        Orientation::Normal270,
+        Orientation::Flipped0,
+        Orientation::Flipped90,
+        Orientation::Flipped180,
+        Orientation::Flipped270,
+    ]
+    .iter()
+    .filter_map(|orient| {
+        let picture = picture.to_orientation(*orient);
+
+        let count = count_serpents(&picture);
+
+        // println!("{:?} -> {}:{}", orient, count, picture);
+
+        if count > 0 {
+            Some(count)
+        } else {
+            None
+        }
+    })
+    .next()
+    .unwrap()
+}
+
 #[aoc(day20, part2)]
 pub fn solve_p2(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> usize {
-    let connections = connections(tiles);
-
     let picture = stitch::<U28>(tiles);
 
     println!("{}", picture);
 
-    tiles.iter().for_each(|(id, _)| {
-        println!(
-            "{}: {}",
-            id,
-            connections
-                .iter()
-                .filter(|(_, set)| set.contains(id) && set.len() == 2)
-                .count()
-                / 2
-        )
-    });
-
-    tiles.iter().count()
+    picture
+        .iter()
+        .map(|pixel| usize::from(*pixel))
+        .sum::<usize>()
+        - serpent_count(&picture) * 15
 }
 
 #[cfg(test)]
