@@ -107,7 +107,11 @@ pub fn solve_p2(rules: &[(Vec<String>, Vec<String>)]) -> String {
 
     let mut bad_stuff = allergies.iter().collect::<Vec<_>>();
     bad_stuff.sort_by_cached_key(|(k, _)| **k);
-    bad_stuff.iter().map(|(_, v)| v.iter().cloned().next().unwrap()).collect::<Vec<_>>().join(",")
+    bad_stuff
+        .iter()
+        .map(|(_, v)| v.iter().cloned().next().unwrap())
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
 #[cfg(test)]

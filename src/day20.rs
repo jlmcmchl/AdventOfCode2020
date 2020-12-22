@@ -8,7 +8,7 @@ use std::{
 use aoc_runner_derive::{aoc, aoc_generator};
 use nalgebra::{
     storage::Storage, ArrayStorage, Dim, DimName, Matrix, MatrixN, MatrixSlice, Scalar, U1, U10,
-    U96, U24, U8,
+    U24, U8, U96,
 };
 use nom::{
     bytes::complete::{tag, take},
@@ -338,7 +338,6 @@ impl Utilities<Pixel, U96, ArrayStorage<Pixel, U96, U96>> for MatrixN<Pixel, U96
     }
 }
 
-
 fn parse_tile(input: &str) -> IResult<&str, (usize, MatrixN<Pixel, U10>)> {
     let (input, _) = tag("Tile ")(input)?;
     let (input, id) = digit1(input)?;
@@ -592,7 +591,7 @@ fn count_serpents<D: DimName>(picture: &MatrixN<Pixel, D>) -> usize
 where
     <D as DimName>::Value: Mul,
     <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<Pixel>,
-    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<usize>, 
+    <<D as DimName>::Value as Mul>::Output: generic_array::ArrayLength<usize>,
 {
     let (rows, cols) = picture.shape();
 
