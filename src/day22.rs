@@ -1,4 +1,4 @@
-use std::collections::{HashSet, VecDeque};
+use std::{cmp::Ordering, collections::{HashSet, VecDeque}};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -42,9 +42,9 @@ enum GameWinner {
 }
 
 fn check_winner(p1: &VecDeque<u8>, p2: &VecDeque<u8>) -> GameWinner {
-    if p1.len() == 0 {
+    if p1.is_empty() {
         GameWinner::P2
-    } else if p2.len() == 0 {
+    } else if p2.is_empty(){
         GameWinner::P1
     } else {
         GameWinner::None
@@ -58,12 +58,10 @@ fn iter(p1: &mut VecDeque<u8>, p2: &mut VecDeque<u8>) -> RoundWinner {
     match first {
         Some(first) => match second {
             Some(second) => {
-                if first > second {
-                    RoundWinner::P1(first, second)
-                } else if first < second {
-                    RoundWinner::P2(first, second)
-                } else {
-                    unreachable!()
+                match first.cmp(&second) {
+                    Ordering::Greater => RoundWinner::P1(first, second),
+                    Ordering::Less => RoundWinner::P2(first, second),
+                    _ => unreachable!()
                 }
             }
             None => unreachable!(),
@@ -160,10 +158,10 @@ fn check_winner2(
     p2: &VecDeque<u8>,
     states: &mut HashSet<(Vec<u8>, Vec<u8>)>,
 ) -> GameWinner {
-    if !states.insert((p1.iter().copied().collect(), p2.iter().copied().collect())) || p2.len() == 0
+    if !states.insert((p1.iter().copied().collect(), p2.iter().copied().collect())) || p2.is_empty()
     {
         GameWinner::P1
-    } else if p1.len() == 0 {
+    } else if p1.is_empty() {
         GameWinner::P2
     } else {
         GameWinner::None
