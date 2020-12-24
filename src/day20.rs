@@ -383,9 +383,9 @@ pub fn solve_p1(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> usize {
             ]
             .iter()
             .for_each(|orient| {
-                let tile = tile.to_orientation(orient.clone());
+                let tile = tile.to_orientation(*orient);
                 map.entry(as_number(&tile.first_row()))
-                    .or_insert(HashSet::new())
+                    .or_insert_with(HashSet::new)
                     .insert(*id);
             });
             map
@@ -423,9 +423,9 @@ fn connections(tiles: &HashMap<usize, MatrixN<Pixel, U10>>) -> HashMap<usize, Ha
                 ]
                 .iter()
                 .for_each(|orient| {
-                    let tile = tile.to_orientation(orient.clone());
+                    let tile = tile.to_orientation(*orient);
                     map.entry(as_number(&tile.first_row()))
-                        .or_insert(HashSet::new())
+                        .or_insert_with(HashSet::new)
                         .insert(*id);
                 });
                 map
@@ -473,7 +473,7 @@ fn orient(
 
 fn get_north(
     (row, col): (usize, usize),
-    tiles: &Vec<(usize, MatrixN<Pixel, U10>)>,
+    tiles: &[(usize, MatrixN<Pixel, U10>)],
 ) -> Option<usize> {
     if row > 0 {
         let rowlen = (tiles.len() - col) / row;
@@ -490,7 +490,7 @@ fn get_north(
 
 fn get_west(
     (row, col): (usize, usize),
-    tiles: &Vec<(usize, MatrixN<Pixel, U10>)>,
+    tiles: &[(usize, MatrixN<Pixel, U10>)],
 ) -> Option<usize> {
     if col > 0 {
         let ind = if row > 0 {
@@ -534,8 +534,7 @@ where
             let (id, tile) = if let Some(connection) = north.or(west) {
                 let id = connections[&connection]
                     .iter()
-                    .filter(|e| !used.contains(*e))
-                    .next()
+                    .find(|e| !used.contains(*e))
                     .unwrap();
 
                 let tile = orient(&tiles[&id], north, west, &connections);
@@ -602,7 +601,7 @@ where
             // println!("{} {} {} {}", i, j, cols, rows);
 
             if picture.get((i + 18, j)) == Some(&Pixel::On)
-                && picture.get((i + 0, j + 1)) == Some(&Pixel::On)
+                && picture.get((i, j + 1)) == Some(&Pixel::On)
                 && picture.get((i + 1, j + 2)) == Some(&Pixel::On)
                 && picture.get((i + 4, j + 2)) == Some(&Pixel::On)
                 && picture.get((i + 5, j + 1)) == Some(&Pixel::On)
