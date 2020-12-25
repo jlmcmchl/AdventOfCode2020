@@ -1,4 +1,7 @@
-use std::{cmp::Ordering, collections::{HashSet, VecDeque}};
+use std::{
+    cmp::Ordering,
+    collections::{HashSet, VecDeque},
+};
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
@@ -44,7 +47,7 @@ enum GameWinner {
 fn check_winner(p1: &VecDeque<u8>, p2: &VecDeque<u8>) -> GameWinner {
     if p1.is_empty() {
         GameWinner::P2
-    } else if p2.is_empty(){
+    } else if p2.is_empty() {
         GameWinner::P1
     } else {
         GameWinner::None
@@ -57,13 +60,11 @@ fn iter(p1: &mut VecDeque<u8>, p2: &mut VecDeque<u8>) -> RoundWinner {
 
     match first {
         Some(first) => match second {
-            Some(second) => {
-                match first.cmp(&second) {
-                    Ordering::Greater => RoundWinner::P1(first, second),
-                    Ordering::Less => RoundWinner::P2(first, second),
-                    _ => unreachable!()
-                }
-            }
+            Some(second) => match first.cmp(&second) {
+                Ordering::Greater => RoundWinner::P1(first, second),
+                Ordering::Less => RoundWinner::P2(first, second),
+                _ => unreachable!(),
+            },
             None => unreachable!(),
         },
         None => unreachable!(),

@@ -471,10 +471,7 @@ fn orient(
     .unwrap()
 }
 
-fn get_north(
-    (row, col): (usize, usize),
-    tiles: &[(usize, MatrixN<Pixel, U10>)],
-) -> Option<usize> {
+fn get_north((row, col): (usize, usize), tiles: &[(usize, MatrixN<Pixel, U10>)]) -> Option<usize> {
     if row > 0 {
         let rowlen = (tiles.len() - col) / row;
         let ind = row * rowlen + col - rowlen;
@@ -488,10 +485,7 @@ fn get_north(
     }
 }
 
-fn get_west(
-    (row, col): (usize, usize),
-    tiles: &[(usize, MatrixN<Pixel, U10>)],
-) -> Option<usize> {
+fn get_west((row, col): (usize, usize), tiles: &[(usize, MatrixN<Pixel, U10>)]) -> Option<usize> {
     if col > 0 {
         let ind = if row > 0 {
             let rowlen = (tiles.len() - col) / row;
